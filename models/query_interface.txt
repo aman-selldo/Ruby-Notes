@@ -1,0 +1,79 @@
+Query Interface :-
+
+
+eager_load :- single sql query with left outer join
+
+
+N+1 Query problem
+
+users = users.limit(5) 
+users.each do |u|
+	puts u.profile.bio
+end
+
+using eager_load
+
+users = Users.eager_load(:profile).limit(5)
+
+users.each do |user|
+	puts user.profile.bio
+end
+
+
+1. reteving single object
+
+find, take (any random data), first (according to primary key), last (according to primary key), find_by
+
+2. multiple objects
+find_in_batches, start, finish, find_each
+
+
+include:-(performs left outter join) it is used generally when we want to filter or query using conditions on the data, preload :- we use perload when we want to avoid joins
+
+strict_loading :- it prevents lazy loading suppose user is strict loaded and then if i want to fetch comments related to that user it will throw error and. For that the Associations should be strictly loaded for eagar loading
+
+
+Scopes : are used to define common quries that can be reused throughout the application 
+
+example:-
+
+class Book < ApplicationRecord
+  scope :out_of_print, -> { where(out_of_print: true) }
+end
+
+chaining scopes :-
+
+example :-
+
+class Book < ApplicationRecord
+  scope :out_of_print, -> { where(out_of_print: true) }
+  scope :expensive, -> { where("price > 500") }
+  scope :out_of_print_and_expensive, -> { out_of_print.expensive }
+end
+
+passing argument scopes :-
+
+class Book < ApplicationRecord
+  scope :costs_more_than, ->(amount) { where("price > ?", amount) }
+end
+
+
+Default Scope 
+
+======>
+
+Find and Build new object
+
+find_or_create_by
+find_or_create_by!
+find_or_initialized_by (instance will be created but not saved it will be there in a memory)
+
+find_by_sql :- raw sql query can be excecuted and active record object are returned
+
+select_all :- do not return active record objects instead it returns active record result which can be converted into hashes and arrays
+
+pluck :- it is used to retrive specific column from the database as an array without instantiating objects
+
+pick :- It is used to retrive specific value from the record that matches condition first.
+
+ids :-  this is only used to retrive primary key from the table.
