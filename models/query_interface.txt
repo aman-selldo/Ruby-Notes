@@ -3,6 +3,7 @@ Query Interface :-
 
 eager_load :- single sql query with left outer join
 
+=====>
 
 N+1 Query problem
 
@@ -28,12 +29,12 @@ find, take (any random data), first (according to primary key), last (according 
 find_in_batches, start, finish, find_each
 
 
-include:-(performs left outter join) it is used generally when we want to filter or query using conditions on the data, preload :- we use perload when we want to avoid joins
+1. include:-(performs left outter join) it is used generally when we want to filter or query using conditions on the data, preload :- we use perload when we want to avoid joins
 
-strict_loading :- it prevents lazy loading suppose user is strict loaded and then if i want to fetch comments related to that user it will throw error and. For that the Associations should be strictly loaded for eagar loading
+2. strict_loading :- it prevents lazy loading suppose user is strict loaded and then if i want to fetch comments related to that user it will throw error and. For that the Associations should be strictly loaded for eagar loading
 
 
-Scopes : are used to define common quries that can be reused throughout the application 
+3. Scopes : are used to define common quries that can be reused throughout the application 
 
 example:-
 

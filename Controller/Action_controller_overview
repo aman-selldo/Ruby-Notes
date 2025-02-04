@@ -1,0 +1,12 @@
+Controller naming convention 
+example :- Clients Controller is preferred over Client Controller
+
+======>
+
+Parameters :- 
+There are 2 types of parameter Data
+1. example :- http://example.com/accounts?filter=free (after the question mark)
+2. POST parameters which are submitted from an HTML form 
+
+=======>
+Hash and Array parameters :-
