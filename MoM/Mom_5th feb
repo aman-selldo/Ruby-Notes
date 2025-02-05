@@ -1,0 +1,18 @@
+Controller callbacks :-
+before_action 
+skip before_action
+around_action
+request and response objects
+explore CSRF token 
+initializer
+explore streaming
+
+rescue from / raise
+
+router
+resource routing
+controller Namespace and routing
+explore shallow
+Non resourceful routes
+explore members collection 
+

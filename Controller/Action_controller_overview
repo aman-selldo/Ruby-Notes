@@ -10,3 +10,198 @@ There are 2 types of parameter Data
 
 =======>
 Hash and Array parameters :-
+
+basic form using HTML with POST methos and endpoint with /USER
+
+<form accept-charset="UTF-8" action="/users" method="post">
+  <input type="text" name="user[name]" value="Acme" />
+  <input type="text" name="user[phone]" value="12345" />
+  <input type="text" name="user[address][postcode]" value="12345" />
+  <input type="text" name="user[address][city]" value="Carrot City" />
+</form>
+
+After submitting this form data will be converted into Hash Like this 
+params[:user] {"name" => "Acme", "phone" => "12345", "address" => {"postcode" => "1234", "city" => "Carrot City"}}
+
+Nested hash params[:user][:address]
+
+Note :- We can use both Symbols and Strings both.
+
+========>
+
+Composite key parameter :- 
+
+Contains Multiple values in one parameter seperated by delimeter like underscore (/books/4_2)
+We can use extract_value method controller will extract the Composite key value. This method can be used
+to extract array out of any delimeter parameters
+
+Example :- (/books/4_2)
+def show
+    id = params.extract_value(:id)
+    @book = Book.find(id)
+end
+routes be like :-
+    get "/books/:id", to: "books#show"
+
+=============>
+
+JSON Parameter:-
+
+If the content type header of your request is set to application/json, rails will automaticallly load parameter into params hash format.
+
+=============>
+
+Routing Parameter :- 
+get "/client/:status", to: "clients#index", foo: "bar"
+
+:status is the dynamic parameter in the URL (When ever user visits this url will be active)
+and foo: "bar" is the static parameter.
+THIS WILL BE THE JSON GETTING WITH STATIC PARAMETER.
+
+{
+  "controller" => "clients",
+  "action" => "index",
+  "status" => "active",
+  "foo" => "bar"
+}
+
+=======>
+
+DEFAULT_URL_OPTIONS :- 
+
+Default url options method allows to set default parameter for url generation (en, fr, etc)
+
+This can be defined in the Application controller for global route
+
+This can also be defined in the particular controller so that i will be applicable only for that controller.
+
+=========>
+
+STRONG PARAMETERS :- 
+
+Strong parameters is used for the safety purpose 
+
+class userController < ApplicationController
+    def create
+        User.create(user_params)
+    end
+
+    def update
+        user = User.find(params[:id])
+        user.update!(user_params)
+        redirect_to user
+    end 
+
+
+
+    private
+
+    def user_params
+        params.require(:user).permit(:name, :email)
+        params.expect(user:, [:name, :email])
+    end
+end
+
+## require ensures that if the user not present it will raise 400 bad request
+## permit allows the attributes to mass assignment.
+## params.permit! :- Dangerous allows mass assignment of all parameters.
+
+=========>
+
+Cookies :- 
+
+Syntax :- 
+    cookies[:theme] = "dark"
+
+By default cookies get expired after closing the browser
+
+To last longer :- 
+    cookies[:login] = {value: "udfbfb", expires: 1.hour.from_now}
+
+Permanent Cookie :- 
+    cookies.permanent[:locale] = "fr" (This is will set 20 years from now)
+
+Delete Cookie Syntax :- 
+    cookies.delete(:username)
+
+Signed and Encrypted cookies :- 
+    Signed Cookie (Tamper_proof) :- 
+        Syntax :- Cookies.signed[:user_id] = current_user.id
+            (If anybody tries to change the cookie Rails will reject it.)
+
+    Encrypted Cookie :- (secure and hidden)
+        Syntax :- cookies.encrypted[:expiration_date] = Date.tomorrow
+
+Cookies Serializer :- (Handling Complex data)
+    Json does not support Date, time and symbol it is stored in the form of string.
+    TO fix that we have Date.parse
+        Syntax :- Date.parse(cookies.encrypted[expiration_date]) 
+        
+============>
+
+Sessions :-
+    Storing Data:- authentication details
+        session[:current_user_id] = user.id
+    Deleting_Data :-
+        session.delete(:key)
+    Resetting session key :-
+        reset_session
+    Flash messages:- 
+        redirect_to root_url, notice: "Logged out Successfully"
+    (Flash now is used for messages that should disappear within the same request)
+
+    Sessions are stored in a different ways:-
+        CookieStore (default) - Stores session data in the cookie itself.
+        CacheStore - uses rails caching mechanism.
+        ActiveRecordStore - Stores sessions data in a database
+
+Controller Callbacks :- 
+    before_action :- 
+        Runs before a action is executed. commonly used for authentication, authorization and setting up instance variable.
+    Example :- 
+        class ApplicationController < ApplicationController::Base
+
+
+            def required_login
+                unless login?
+                    flash[:error] = "You must loggin to access this section"
+                    redirect_to new_login_url
+                end
+            end
+        end
+    skip_before_action :- 
+        Syntax :- 
+            skip_before_action :required_login, only: [:new, :create]
+    
+
+
+    After_action :- 
+        class ApplicationController < ApplicationController::Base
+            after_action :log_request
+
+            private
+            def log_request
+                Rails.logger.info "Complete action: #{action_name} in #{controlller_name}"
+            end
+        end
+
+    Around_action :- 
+        class ApplicationController < ApplicationController::Base
+
+            private
+
+            def measure_execution_time
+                start_time = Time.now
+                yield
+                end_time = Time.now
+
+                total_duration = end_time - start_time
+                puts total_duration
+            end
+        end
+
+Request and Response objects :- 
+        There are ways rails handles parameters
+            1. query_parameters (?name=john)
+            2. request_parameter (POST AND PUT
+            3. path_parameter (Parameter extracted from the route)
