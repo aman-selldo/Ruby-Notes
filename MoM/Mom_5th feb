@@ -1,18 +1,28 @@
-Controller callbacks :-
-before_action 
-skip before_action
-around_action
-request and response objects
-explore CSRF token 
-initializer
-explore streaming
+MoM's for 5th Feb
 
-rescue from / raise
+Controller Callbacks
 
-router
-resource routing
-controller Namespace and routing
-explore shallow
-Non resourceful routes
-explore members collection 
+before_action: Used to run specific code before a controller action is executed.
 
+skip_before_action: Allows skipping specific before actions on certain controller actions.
+
+around_action: A callback that wraps around controller actions, enabling code to run before and after the action.
+
+request and response objects: Handle HTTP request data (params, headers, etc.) and the response output (status, body, etc.).
+
+explore CSRF token: Learn about Cross-Site Request Forgery (CSRF) protection and how the token helps in preventing malicious requests.
+
+initializer: A piece of code that runs during the boot process of a Rails app, useful for setting up configurations or libraries.
+
+explore streaming: Explore how streaming works in Rails, which allows for sending data incrementally to the client.
+
+Error Handling
+rescue from / raise: Understand the rescue from pattern for handling exceptions, and raise for triggering errors.
+
+Routing
+resource routing: Define standard routes for a resource (like index, show, create, etc.).
+controller Namespace and routing: Group controllers under namespaces to organize routes better.
+explore shallow: Shallow routing generates only the necessary routes for nested resources, reducing clutter.
+
+Non-resourceful routes: Custom routes that don’t follow RESTful conventions.
+explore members and collection: Define custom actions on a resource (using member for actions on individual items and collection for actions on the whole collection).

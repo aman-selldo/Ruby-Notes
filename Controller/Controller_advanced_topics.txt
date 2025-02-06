@@ -1,0 +1,175 @@
+CONTROLLER ADVANCE TOPICS
+
+GET /books/10
+Suppose this is the endpoint we are trying to fetch
+show does rails know that which controller and which action it is calling??
+
+So in routes.rb file we define it 
+
+get "/books/:id", to: "books#show"
+
+========>
+
+PATH AND URL HELPERS
+
+Rails automatically creates helper method for routes 
+    Example :- get "/users/:id", to: "users#show", as: "user"
+        Instead of writing :-
+            <%= link_to "User Profile", "/users/#{@user.id}" %>
+        we can write :- 
+            <%= link_to "User Profile", user_path(@user) %>
+
+===========>
+
+DEFINING ROUTES IN routes.rb file
+    Routes.rb
+        Rails.application.routes.draw do
+            resources :books
+        end
+    It creates routes automatically :-
+        GET    /books          -> books#index
+        POST   /books          -> books#create
+        GET    /books/:id      -> books#show
+        PUT    /books/:id      -> books#update
+        DELETE /books/:id      -> books#destroy
+
+Nested Routes :-
+    resources :authors do
+      resources :books
+    end
+
+    Url will look something like :-
+    GET /authors/5/books/10 -> books#show
+
+Custom Routes :-
+    get "/dashboard", to: "pages#dashboard"
+
+Named Routes :-
+    get "/profile", to: "users#profile", as: "profile"  (URL will be :- /profile)
+
+Redirect to :-
+    get "/home", to: redirect("/dashboard")
+
+Catch all the routes unmatched requests :- 
+    get "*path", to: "errors#not_found"
+
+
+What is Resource routing in rails :-
+    it automatically generates restful routes :- 
+        Example :-  resources :photos
+        In single line 7 routes like
+            GET /photos → index (list all photos)
+            GET /photos/new → new (form for new photo)
+            POST /photos → create (create a new photo)
+            GET /photos/:id → show (display a photo)
+            GET /photos/:id/edit → edit (form for editing a photo)
+            PATCH/PUT /photos/:id → update (update a photo)
+            DELETE /photos/:id → destroy (delete a photo)
+
+When we define resources :photos rails generates helper methods :-
+    Helper Methods:-
+        photos_path ->	/photos
+        new_photo_path  ->	/photos/new
+        edit_photo_path(5)  ->	/photos/5/edit
+        photo_path(5) ->	/photos/5
+    
+NameSpace :-
+    scope module: "admin" do 
+        resources :article
+    end
+    This keeps the controller inside Admin:: but removes /admin/ from the url
+
+Routing Concerns :-
+    if Multiple resources share behavior we use CONCERNS
+Example :-
+    concerns :commentable do
+        resources :comments
+    end
+    resources :posts, concerns: :commentable
+    resources :photos, concerns: :commentable
+
+This prevents repeating resources :comments inside each resource.
+
+namespace key word controls both URL path and also controller structure.
+
+==========>
+
+What is NON RESOURCEFUL ROUTING?
+
+    Bound parameters :-
+        Bound parameters are dynamic part of a route that rails extract from the url
+        
+        example :-
+            get "photos(/:id)", to: "photos#display"
+
+    Dyanmic Segments :-
+        Example :-
+            get "photos/:id/:user_id", to: "photos#show"
+        /photos/1/2 → Calls show action with params[:id] = 1 and params[:user_id] = 2
+
+    Static Segments :-
+        get "photos/:id/with_user/:user_id", to: "photos#show"
+
+    The Query String :-
+        get "photos/:id", to: "photos#show"
+        /photos/1?user_id=2 → params[:id] = 1, params[:user_id] = 2
+
+    Defining Default parameters :-
+        get "photos/:id", to: "photos#show", defaults: { format: "jpg" }
+
+    Example :-
+        defaults format: :json do
+            resources :photos
+            resources :articles
+        end
+    Note :- This ensures response deafult to JSON
+
+    Naming Routes :- 
+        Example :- get "exit", to: "sessions#destroy", as: :logout
+        Uses the :as option to create named route helper
+        Now, logout_path returns /exit.
+
+HTTP Verb constraints :-
+Examples :- 
+    match "photos", to: "photos#show", via: [:get, :post]
+    (above line of only matches to get and post request)
+
+Inspection Routes :-
+    To check all your routes you can just checkout to the link
+    http://localhost:3000/rails/info/routes (in development mode)
+
+    Or else using terminal :-
+    bin/rails routes
+
+Testing the Routes :- 
+    1. assert_generates :-
+        Example :-
+            assert_generates "/photos/1", { controller: "photos", action: "show", id: "1" }
+            (this test that the given options controller: photos, show and id = 1 generates URL /photos/1)
+
+    2. assert_organizes:- 
+        Example :-
+            assert_recognizes({ controller: "photos", action: "show", id: "1" }, "/photos/1")
+            (It is opposite of assert_generates it checks that the  given path correctly recongnized and routed to photos#show with id of "1")
+
+    3. assert_routing :- (assert_routing is the combination of both assert_generates and assert_recognizes)
+
+Breaking up the large files with draw :-
+    For large application with many routes, it can become challenging to manage routes in a single file,
+     so rails provide DRAW keyword which organizes routes into multiple files.
+     Example :-
+        Rails.application.routes.draw do
+            get "foo", to: "foo#bar"
+
+            draw(:admin) # This will load the routes from config/routes/admin.rb
+        end
+
+
+End =======>
+
+
+
+
+
+
+
