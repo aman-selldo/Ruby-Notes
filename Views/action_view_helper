@@ -1,0 +1,11 @@
+Formatting in rails
+
+Formatting helpers in rails help in displaying dates, numbers and text in human readable form.
+Includes :- 
+1. Date and Time formatting.
+2. number formatting.
+3. text formatting.
+
+TIme.current (rails configured time zone)
+Time.now (uses system/server timezone)
+

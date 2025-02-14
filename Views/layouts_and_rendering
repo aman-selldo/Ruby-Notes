@@ -1,0 +1,20 @@
+Creating response in rails controller
+
+There are 3 types of primary ways to create http request 
+
+1. render (renders new page without sending request to new url)
+2. redirect_to (send the request to different url) (302 found )
+3. head (sends only http headers with no body)
+
+redirect_back :- Sends user to pervious page.
+rediect_to (do not halt the execution.)
+if you want to stop the execution we can use return.
+
+
+Using head to send headers as a response.
+:no-content status code: 204
+:bad_request status code: 400
+:forbidden status code: 403
+:not-found status code: 404
+:internal-server-error status code: 500
+    

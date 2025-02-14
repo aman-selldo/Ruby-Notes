@@ -1,0 +1,89 @@
+Difference between 1. <% %> and 2. <%= %>
+1. is used to execute the ruby code
+2. is used to outputting the values
+
+Partials :-
+    we use Partials to simplify the views
+    Example:-
+        <%= render "application/ad_banner" %>
+
+            <h1>Products</h1>
+
+            <p>Here are a few of our fine products:</p>
+            <% @products.each do |product| %>
+            <%= render partial: "product", locals: { product: product } %>
+            <% end %>
+
+            <%= render "application/footer" %> 
+        In this footer and ad_baner will be having a different partial file with underscore at the start
+
+1. Using locals :-
+    We can pass data to Partials with locals. The variable passed using locals will only be available inside partials
+
+2. Using local_assigns :-
+    local_assigns is used to check if the variable was passed to the partial.
+    Example :- 
+    <% local_assigns[:product] %>  # => @product
+    <% local_assigns[:product_reviews] %>  # => nil (not passed)
+    If prodcuct reviews is not passed it will return nil.
+    Use case :- When we want to display content conditionally whether variable is passed or not.
+
+3. render without partial and locals
+    can be written is more simple way by ommitting partials and locals keys.
+    Example:-
+        <%= render "product", product: @product %> (it can be written like this)
+
+        also if variables are passed to the partials we can write it as 
+        <%= render @product %> (this automatically looks for _product.html.erb passes @product as product to the partial)
+
+4. as and object Options:-
+    Example :- 
+        <%= render partial: "product", object: @item, as: "item" %>
+        (rails assigns instance variable to the local variable name after the partial we can change this using object: and as: )
+
+5. Rendering collections :-
+    Instead of looping manually we can rails allows rendering collection in a single line :-
+    <%= render partial: "product", collection:@products %>
+    or simply
+    <%= render @products %>
+
+6. Spacer Template :-
+    spacer_template can be used to insert space between the items.
+
+7. Counter Varibales :-
+    Rails provide counter variable while rendering collection.
+
+8. fetch
+    Example :- 
+        <% local_assigns.fetch(:related_products, []).each do |related_product| %>
+          <%# Display related products %>
+        <% end %>
+        if related_products is missing it defaults to an empty array avoiding nil errors.
+
+9. Strict locals for performance optimizations :-
+    Normally rails compile new version of partial each time locals: change 
+    to pervent this we can enforce strict local.
+
+10. Disabling Local :-
+    we can diallow locals using below syntax :-
+        <%# locals: ()%>
+    (If we pass any local variable it will raise an error.)
+
+Layouts :-
+    Layouts in rails allow us to wrap multiple views with a common structure, such as header, footer, and navigation.
+
+1. Partial layouts :- 
+    partials allow reusing pieces of views. You can also wrap partials inside layouts to keep 
+    design consistent.
+
+2. Collection with partial layouts.
+    Syntax:-
+    <%= render partial: "article", collection: @articles, layout: "special_layout" %>
+    if we want to wrap multiple article wrapped in a layout.
+
+Helpers :- 
+    Rails provide helpers to make a common task easier.
+    There are Formatting helpers, Link helpers, form helpers.
+
+Localized Views :-
+    automatically choose a view based on the user's language (locale).
